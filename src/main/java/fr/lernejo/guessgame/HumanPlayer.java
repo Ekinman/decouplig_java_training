@@ -20,7 +20,7 @@ public class HumanPlayer implements Player {
         if (lowerOrGreater){
             this.logger.log("Failed : Try a lower number");
         }else{
-            this.logger.log("Failed : Try a higher number");
+            this.logger.log("Failed : Try a greater number");
         }
     }
 }

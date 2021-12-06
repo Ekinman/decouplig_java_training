@@ -6,13 +6,12 @@ import fr.lernejo.logger.LoggerFactory;
 public class Simulation {
 
     private final Logger logger = LoggerFactory.getLogger("simulation");
-    private final HumanPlayer player;
+    private final Player player;
     private long guessingNumber;
     private boolean answer = true;
 
     public Simulation(Player player) {
-        this.player = (HumanPlayer) player;
-        this.initialize(this.guessingNumber);
+        this.player = player;
     }
 
     public void initialize(long guessingNumber) {
@@ -20,32 +19,46 @@ public class Simulation {
     }
 
     /**
-     * @return true if the player have guessed the right number
+     * @return true if the player has guessed the right number
      */
     private boolean nextRound() {
-        long nb = this.player.askNextGuess();
+        long number = this.player.askNextGuess();
 
-        if(nb == this.guessingNumber){
+        if(number == this.guessingNumber){
             this.logger.log("You found it !");
             answer = false;
             return true;
         }else{
-            if(nb > this.guessingNumber){
-                this.logger.log("Try a lower number");
-                //this.player.respond(true);
+            if(number > this.guessingNumber){
+                this.player.respond(true);
                 return false;
-            }else if(nb < this.guessingNumber){
-                //this.player.respond(false);
-                this.logger.log("Try a higher number");
+            }else if(number < this.guessingNumber){
+                this.player.respond(false);
                 return false;
             }
         }
+        this.logger.log("Lost");
         return false;
     }
 
-    public void loopUntilPlayerSucceed() {
-        while(answer){
-            this.nextRound();
+    public void loopUntilPlayerSucceed(long number_iter) {
+        int trial = 0;
+        boolean found = false;
+        long firstTime = System.currentTimeMillis();
+        while(trial < number_iter){
+            found = this.nextRound();
+            if(found){
+                break;
+            }else{
+                trial++;
+            }
+
         }
+        if(!found){
+            this.logger.log("Lost ! The number was : " + guessingNumber);
+        }
+        long secondTime = System.currentTimeMillis();
+
+        this.logger.log("Time spent : " + (secondTime-firstTime) + " ms");
     }
 }
